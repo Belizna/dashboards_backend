@@ -23,7 +23,7 @@ import { get_heresy_books,edit_heresy_books,delete_heresy_books,add_heresy_books
 
 import CheckAuth from './utils/CheckAuth.js'
 
-mongoose.connect("mongodb+srv://MuadDib:Qwerty123qwerty@cluster0.a7edzkp.mongodb.net/dshb?retryWrites=true&w=majority",
+mongoose.connect(process.env.MONGO_CONNECTION_STRING,
 {useNewUrlParser: true})
 .then(()=> console.log('db connection'))
 .catch((err) => console.log('error db connection', err))
