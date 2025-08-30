@@ -29,7 +29,7 @@ export const person_get = async (req, res) => {
 
         var personTree = []
 
-        person.map(arr => personTree.push({ id: arr.id, children: arr.children }))
+        person.map(arr => personTree.push({ id: arr.id, value: arr.value, children: arr.children }))
 
         var personSelectorOptions = []
         var personSelectorClass = []
@@ -59,7 +59,10 @@ export const person_add_class = async (req, res) => {
         var arr = []
 
         for (var i = 0; i < req.body.names.length; i++) {
-            arr.push({ id: req.body.names[i] })
+            var values = {
+                title: req.body.names[i]
+            }
+            arr.push({ id: req.body.names[i], value: values })
         }
 
         PersonModel.insertMany(arr)
@@ -77,22 +80,21 @@ export const person_add_class = async (req, res) => {
 export const person_add_person = async (req, res) => {
     try {
 
-        const person = await PersonModel.find()
-
         var arr = [req.body]
-
 
         for (var i = 0; i < arr[0].items.length; i++) {
 
-            var countChild = 0
-
-            person.map(pers => pers.id === arr[0].items[i].name ? countChild = pers.children.length : pers)
-
             for (var j = 0; j < arr[0].items[i].list.length; j++) {
-                countChild++
+
                 var group = {
                     id: arr[0].items[i].list[j].first,
-                    children: [{ id: countChild + '.' + arr[0].items[i].list[j].second, children: [] }]
+                    value: {
+                        title: arr[0].items[i].list[j].first,
+                        items: [{
+                            text: arr[0].items[i].list[j].second,
+                        }]
+                    },
+                    children: []
                 }
                 await PersonModel.updateOne({ id: arr[0].items[i].name }, { $addToSet: { children: group } })
             }
@@ -111,27 +113,20 @@ export const person_add_person = async (req, res) => {
 export const person_add_books = async (req, res) => {
     try {
 
-        const person = await PersonModel.find()
-
         var arr = [req.body]
 
-        for (var j = 0; j < person.length; j++) {
-            for (var i = 0; i < arr[0].items.length; i++) {
-                for (var k = 0; k < person[j].children.length; k++) {
-                    if (person[j].id === arr[0].items[i].name && person[j].children[k].id === arr[0].items[i].person) {
-                        for (var m = 0; m < arr[0].items[i].list.length; m++) {
-
-                            var books = {
-                                id: person[j].children[k].children[0].id.split('.')[0] + '.' + arr[0].items[i].list[m].first
-                            }
-
-                            await PersonModel.updateOne({ id: arr[0].items[i].name, children: { $elemMatch: { id: arr[0].items[i].person } } }, { $addToSet: { "children.$.children.0.children": books } })
-                        }
+        for (var i = 0; i < arr[0].items.length; i++) {
+            for (var m = 0; m < arr[0].items[i].list.length; m++) {
+                var books = {
+                    id: self.crypto.randomUUID(),
+                    value: {
+                        title: arr[0].items[i].list[m].first
                     }
                 }
+                await PersonModel.updateOne({ id: arr[0].items[i].name, children: { $elemMatch: { id: arr[0].items[i].person } } }, { $addToSet: { "children.$.children": books } })
+
             }
         }
-
         res.status(200).json({
             arr
         })
