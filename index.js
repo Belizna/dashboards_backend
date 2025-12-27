@@ -31,6 +31,8 @@ import { get_beyblade, edit_beyblade, delete_beyblade, add_beyblade } from './co
 import { person_get, person_add_class, person_add_person, person_add_books } from './controller/personController.js'
 import { add_maps, get_maps } from './controller/mapsController.js'
 import { jobsMonthUpdate } from './controller/jobsController.js';
+import { edit_books, delete_books, add_books, get_booksdiff_listgroup, get_books } from './controller/bookDiffConstroller.js';
+import { get_write_diff_books, delete_write_diff_books, add_write_diff_books, edit_write_diff_books } from './controller/writeBooksDiffController.js';
 import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
 import { job } from './cronJob/MonthJob.js'
 
@@ -135,6 +137,12 @@ app.patch('/books/heresy_horus/edit/:id', bookCreateValidator, edit_heresy_books
 app.delete('/books/heresy_horus/delete/:id', delete_heresy_books)
 app.get('/books/charts_group_list/', get_books_listgroup)
 
+app.get('/books/:book_name', get_books)
+app.post('/books/add/:book_name', bookCreateValidator, add_books)
+app.patch('/books/edit/:id', bookCreateValidator, edit_books)
+app.delete('/books/delete/:id', delete_books)
+app.get('/booksdiff/charts_groupdiff_list/', get_booksdiff_listgroup)
+
 app.get('/collection/card/:collection_card', get_card)
 app.get('/collection/cards/', get_card_listgroup)
 app.post('/collection/card/add/:collection_card', add_card)
@@ -159,6 +167,12 @@ app.get('/books/write_books/:book_name', get_write_books)
 app.post('/books/write_books/add/:book_name', add_write_books)
 app.patch('/books/write_books/edit/:id', edit_write_books)
 app.delete('/books/write_books/delete/:id', delete_write_books)
+
+app.get('/books/write_diff_books/:book_name', get_write_diff_books)
+app.post('/books/write_diff_books/add/:book_name', add_write_diff_books)
+app.patch('/books/write_diff_books/edit/:id', edit_write_diff_books)
+app.delete('/books/write_diff_books/delete/:id', delete_write_diff_books)
+
 
 app.get('/games/library/:library_name', get_games)
 app.post('/games/library/add', add_games)
