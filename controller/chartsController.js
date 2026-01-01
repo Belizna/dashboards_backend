@@ -1,5 +1,10 @@
 import 'core-js'
-import BookModel from '../models/Book.js'
+import {
+    getDaysInYear,
+    getDayOfYear,
+    getMonth,
+    getYear
+} from 'date-fns';
 import PulseModel from '../models/Pulse.js'
 import WriteBooksModel from '../models/WriteBooks.js'
 import PaymentsModel from '../models/Payments.js'
@@ -16,6 +21,7 @@ import CardModel from "../models/Card.js"
 import BeybladeModel from '../models/Beyblade.js'
 import CreditStaticHistory from '../models/CreditStaticHistory.js'
 import JobsMounthModel from '../models/JobsMounth.js'
+import Purpose from '../models/Purpose.js'
 
 export const book_static = async (req, res) => {
 
@@ -619,6 +625,13 @@ export const main_static = async (req, res) => {
             `${req.params.year}-11`, `${req.params.year}-12`
         ]
 
+        //количество дней в году текущий день, разница между днями, текущий месяц
+        const now = new Date();
+        const totalDays = getDaysInYear(now);
+        const passedDays = getDayOfYear(now);
+        const leftDays = totalDays - passedDays;
+        const monthNumber = Number(req.params.year) === Number(getYear(now)) ? getMonth(now) + 1 : 12;
+
         let dataPieCount = [];
         let dataPiePrice = [];
         let games = []
@@ -695,10 +708,6 @@ export const main_static = async (req, res) => {
         var books_price_pulse = []
         var games_price_pulse = []
         var miniatures_price_pulse = []
-        var books_list_count = 0
-        var books_price = []
-        var game_over = []
-        var game_over_count = 0
         var books_write = []
         var books_write_count = 0
         let count_books_price = 0
@@ -710,63 +719,11 @@ export const main_static = async (req, res) => {
         var beybladeAssemble = []
         var cardsOtherCollection = []
 
+        var purposeCollect = []
+
         const jobsMonth = await JobsMounthModel.find({ modal_view: false }).limit(1)
-
-        //лист для покупки книг и количество
-        const books_list_price = await BookModel.aggregate([
-            { $match: { presence: 'Нет' } },
-            {
-                $group: {
-                    _id: "$compilation",
-                    children: { $push: { title: "$book_name" } },
-                    count: { $sum: 1 }
-                }
-            }
-        ])
-
-        books_list_price.map(
-            (obj) => {
-                books_price.push({ title: obj._id, children: obj.children }),
-                    books_list_count += obj.count
-            })
-
-        //лист количество не пройденных игр и количество
-        const games_list = await Games.aggregate([
-            { $match: { presence: 'Не Пройдено' } },
-            {
-                $group: {
-                    _id: "$compilation",
-                    children: { $push: { title: "$game_name" } },
-                    count: { $sum: 1 }
-                }
-            }
-        ])
-
-        games_list.map(
-            (obj) => {
-                game_over.push({ title: obj._id, children: obj.children }),
-                    game_over_count += obj.count
-            })
-
-        //лист количества не прочитанных книг и количество
-        const books_write_list = await WriteBooksModel.aggregate([
-            { $match: { presence: 'Не Прочитано' } },
-            {
-                $group: {
-                    _id: "$compilation",
-                    children: { $push: { title: "$book_name", format: "$format" } },
-                    count: { $sum: 1 }
-                }
-            }
-        ])
-
-        books_write_list.map(
-            (obj) => {
-                var child = []
-                obj.children.map(o => child.push({ title: o.title + ' (' + o.format + ')' }))
-                books_write.push({ title: obj._id, children: child }),
-                    books_write_count += obj.count
-            })
+        //цели
+        const purpose = await Purpose.find({ purpose_year: req.params.year })
 
         //лист по движениям покрашено миниатюр, прочитано книг, пройдекно игр, приобретено игр
         const books_list = await PulseModel.aggregate([
@@ -1143,7 +1100,132 @@ export const main_static = async (req, res) => {
             { type: 'Покрашено миниатюр', value: summMiniatures },
             { type: 'Прочитано книг', value: summBooks })
 
+        //расчет показателей целей
+        for (var i = 0; i < purpose.length; i++) {
+            if (purpose[i].purpose_key === "Прохождение игр") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedGames[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedGames
+                })
+            } else if (purpose[i].purpose_key === "Покупка игр") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedGamesPriceCount[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedGamesPriceCount
+                })
+            } else if (purpose[i].purpose_key === "Чтение книг") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedBooks[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedBooks
+                })
+            } else if (purpose[i].purpose_key === "Покупка книг") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedbooksPriceCount[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedbooksPriceCount
+                })
+            } else if (purpose[i].purpose_key === "Покрас миниатюр") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedMiniatures[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedMiniatures
+                })
+            } else if (purpose[i].purpose_key === "Ипотека") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedPayments[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedPayments
+                })
+            } else if (purpose[i].purpose_key === "Заработок") {
+                var nowTempo = 0
+                for (var j = 0; j < monthNumber; j++) {
+                    nowTempo += sortedSalary[j].count_pulse
+                }
+                purposeCollect.push({
+                    purpose_name: purpose[i].purpose_name,
+                    days: leftDays,
+                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    done: nowTempo,
+                    percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
+                    planMount: Math.ceil(purpose[i].purpose_count / 12),
+                    nowTempo: Math.ceil(nowTempo / monthNumber),
+                    diff: purpose[i].purpose_count - nowTempo,
+                    purpose_count: purpose[i].purpose_count,
+                    data: sortedSalary
+                })
+            }
+        }
+
         res.status(200).json({
+            purposeCollect,
             jobsMonth,
             gamesAssemble,
             booksAssemble,
@@ -1210,10 +1292,6 @@ export const main_static = async (req, res) => {
             games_price_pulse,
             books_price_pulse,
             miniatures_price_pulse,
-            books_price,
-            books_list_count,
-            game_over,
-            game_over_count,
             books_write,
             books_write_count,
             count_other_card_price,
