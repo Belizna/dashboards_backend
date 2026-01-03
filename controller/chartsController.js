@@ -1110,7 +1110,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1127,7 +1127,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1144,7 +1144,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1161,7 +1161,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1178,7 +1178,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1195,7 +1195,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
@@ -1212,7 +1212,7 @@ export const main_static = async (req, res) => {
                 purposeCollect.push({
                     purpose_name: purpose[i].purpose_name,
                     days: leftDays,
-                    percentDays: Number((passedDays * 100 / totalDays).toFixed(3)),
+                    percentDays: 100-Number((passedDays * 100 / totalDays).toFixed(3)),
                     done: nowTempo,
                     percentDone: Number((nowTempo * 100 / purpose[i].purpose_count).toFixed(3)),
                     planMount: Math.ceil(purpose[i].purpose_count / 12),
