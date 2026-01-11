@@ -31,7 +31,7 @@ export const scratch_get = async (req, res) => {
                         image_key: arr.image_key
                     }) : group.push({
                         name: arr.name,
-                        image_key: 'https://1.downloader.disk.yandex.ru/preview/29892e2dc6f19f596d9a6e2458c191075eb6007f08310d0b983ecb103710dbe4/inf/7pWEqG7E9i5YZ7yEkGvrSYL5Emc0N30IkhqffPqK3UiIWyNo8WKSSUYZH_qkyc8Qq9tMm5CUC2CwK78bUGIqNw%3D%3D?uid=1108742620&filename=%D1%81%D0%B5%D1%80%D1%8B%D0%B9%20%D1%84%D0%BE%D0%BD.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1108742620&tknv=v3&size=3147x1680'
+                        image_key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png'
                     })
             })
 
