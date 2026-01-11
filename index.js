@@ -35,6 +35,7 @@ import { edit_books, delete_books, add_books, get_booksdiff_listgroup, get_books
 import { get_write_diff_books, delete_write_diff_books, add_write_diff_books, edit_write_diff_books } from './controller/writeBooksDiffController.js';
 import { purpose_add, purpose_delete, purpose_edit, purpose_get } from './controller/purposeController.js';
 import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
+import { scratch_add, scratch_get_poster, scratch_get, scratch_edit, scratch_delete } from './controller/scratchController.js';
 import { job } from './cronJob/MonthJob.js'
 
 import CheckAuth from './utils/CheckAuth.js'
@@ -66,6 +67,12 @@ app.get('/person', person_get)
 app.post('/person/add/class', person_add_class)
 app.post('/person/add/person', person_add_person)
 app.post('/person/add/books', person_add_books)
+
+app.get('/scratch', scratch_get)
+app.get('/scratch/poster', scratch_get_poster)
+app.post('/scratch/add/', scratch_add)
+app.patch('/scratch/edit/:id', scratch_edit)
+app.delete('/scratch/delete/:id', scratch_delete)
 
 app.get('/maps', get_maps)
 app.post('/maps/add/placemark', add_maps)
