@@ -334,7 +334,6 @@ export const get_booksdiff_listgroup = async (req, res) => {
         ])
 
         for (var i = 0; i < filters.length; i++) {
-
             var items = []
             var procent = 0
             var countNotBooks = 0
@@ -344,7 +343,7 @@ export const get_booksdiff_listgroup = async (req, res) => {
             books_list.map(arr => {
                 if (arr._id === filters[i].compilation) {
                     arr.children.map(obj => obj.status === 'Нет' ? items.push(obj.title) : obj)
-                    procent = (100 - (items.length * 100 / books_list[i].count)).toFixed(2)
+                    procent = (100 - (items.length * 100 / arr.count)).toFixed(2)
                     countNotBooks = items.length
                     countBooks = arr.count
                     summBooks =  arr.summ
