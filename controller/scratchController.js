@@ -1,4 +1,5 @@
 import ScratchModel from "../models/TopsScratch.js"
+import PulseScratchModel from "../models/PulseScratch.js"
 
 export const scratch_get = async (req, res) => {
     try {
@@ -136,7 +137,29 @@ export const scratch_add = async (req, res) => {
 export const scratch_edit = async (req, res) => {
     try {
 
-        const comics_edit = await ScratchModel.findByIdAndUpdate(req.params.id, {
+        const scratch = await ScratchModel.findById(req.params.id)
+
+        if (req.body.status === 'Выполнено' && scratch.status === 'Не выполнено') {
+            const pulseDoc = new PulseScratchModel({
+                date_pulse: Date.now(),
+                name_pulse: req.body.name,
+                category_pulse: scratch.category,
+                id_object: req.params.id
+            })
+
+            await pulseDoc.save()
+
+        } else if (req.body.status === 'Не выполнено' && scratch.status === 'Выполнено') {
+            await PulseScratchModel.deleteMany({ id_object: req.params.id })
+        } else {
+            await PulseScratchModel.updateMany({ id_object: req.params.id },
+                {
+                    name_pulse: req.body.name,
+                    category: req.body.category,
+                })
+        }
+
+        const scratch_edit = await ScratchModel.findByIdAndUpdate(req.params.id, {
             name: req.body.name,
             status: req.body.status,
             category: req.body.category,
@@ -144,7 +167,7 @@ export const scratch_edit = async (req, res) => {
         })
 
         res.status(200).json({
-            comics_edit,
+            scratch_edit,
         })
     }
     catch (err) {

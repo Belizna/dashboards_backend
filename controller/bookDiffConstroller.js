@@ -137,7 +137,6 @@ export const get_booksdiff_listgroup = async (req, res) => {
 
         const author = await AuthorFilter.find()
 
-        
         /** третья страница**/
 
         var booksAuthorWriteListGroup = []
@@ -186,21 +185,21 @@ export const get_booksdiff_listgroup = async (req, res) => {
 
                         if (arr.format === 'рассказ') {
                             flagR++
-                            summStory+=arr.count
+                            summStory += arr.count
                             arr.children.map(ar => {
                                 Story.push(` ${ar.title}`)
                             })
                         }
                         else if (arr.format === 'роман') {
                             flagRom++
-                            summRomans+=arr.count
+                            summRomans += arr.count
                             arr.children.map(ar => {
                                 Romans.push(` ${ar.title}`)
                             })
                         }
                         else {
                             flagP++
-                            summBigStory+=arr.count
+                            summBigStory += arr.count
                             arr.children.map(ar => {
                                 BigStory.push(` ${ar.title}`)
                             })
@@ -334,32 +333,37 @@ export const get_booksdiff_listgroup = async (req, res) => {
             }
         ])
 
-        for (var i = 0; i < books_list.length; i++) {
-            var items = []
-            var keyBooks = ''
-            var procent = 0
+        for (var i = 0; i < filters.length; i++) {
 
-            filters.map((obj) => {
-                if (obj.compilation === books_list[i]._id) {
-                    keyBooks = obj.key
-                } else
-                    obj
+            var items = []
+            var procent = 0
+            var countNotBooks = 0
+            var summBooks = 0
+            var countBooks = 0 
+
+            books_list.map(arr => {
+                if (arr._id === filters[i].compilation) {
+                    arr.children.map(obj => obj.status === 'Нет' ? items.push(obj.title) : obj)
+                    procent = (100 - (items.length * 100 / books_list[i].count)).toFixed(2)
+                    countNotBooks = items.length
+                    countBooks = arr.count
+                    summBooks =  arr.summ
+                }
             })
 
-            books_list[i].children.map(obj => obj.status === 'Нет' ? items.push(obj.title) : obj)
-
-            procent = (100 - (items.length * 100 / books_list[i].count)).toFixed(2)
-
-            var countNotBooks = items.length
             booksListGroup.push({
-                nameCompilation: books_list[i]._id, keyBooks: keyBooks,
-                procent: procent, countNotBooks: countNotBooks, items: items,
-                summBooks: books_list[i].summ,
-                countBooks: books_list[i].count
+                nameCompilation: filters[i].compilation,
+                procent: procent, 
+                countNotBooks: countNotBooks, 
+                items: items,
+                summBooks: summBooks,
+                countBooks: countBooks,
+                keyBooks: filters[i].key
             })
         }
 
         booksListGroup.sort((a, b) => a.procent - b.procent)
+
         /** конец кода по первой странице **/
 
         res.status(200).json({
