@@ -334,28 +334,31 @@ export const get_books_listgroup = async (req, res) => {
             }
         ])
 
-        for (var i = 0; i < books_list.length; i++) {
+        for (var i = 0; i < filters.length; i++) {
             var items = []
-            var keyBooks = ''
             var procent = 0
+            var countNotBooks = 0
+            var summBooks = 0
+            var countBooks = 0 
 
-            filters.map((obj) => {
-                if (obj.compilation === books_list[i]._id) {
-                    keyBooks = obj.key
-                } else
-                    obj
+            books_list.map(arr => {
+                if (arr._id === filters[i].compilation) {
+                    arr.children.map(obj => obj.status === 'Нет' ? items.push(obj.title) : obj)
+                    procent = (100 - (items.length * 100 / arr.count)).toFixed(2)
+                    countNotBooks = items.length
+                    countBooks = arr.count
+                    summBooks =  arr.summ
+                }
             })
 
-            books_list[i].children.map(obj => obj.status === 'Нет' ? items.push(obj.title) : obj)
-
-            procent = (100 - (items.length * 100 / books_list[i].count)).toFixed(2)
-
-            var countNotBooks = items.length
             booksListGroup.push({
-                nameCompilation: books_list[i]._id, keyBooks: keyBooks,
-                procent: procent, countNotBooks: countNotBooks, items: items,
-                summBooks: books_list[i].summ,
-                countBooks: books_list[i].count
+                nameCompilation: filters[i].compilation,
+                procent: procent, 
+                countNotBooks: countNotBooks, 
+                items: items,
+                summBooks: summBooks,
+                countBooks: countBooks,
+                keyBooks: filters[i].key
             })
         }
 

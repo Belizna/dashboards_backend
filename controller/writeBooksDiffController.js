@@ -1,6 +1,7 @@
 import WriteBooksModel from "../models/WriteBooksDiff.js";
 import PulseModel from "../models/Pulse.js"
 import AuthorFilter from "../models/AuthorDiffFilter.js";
+import ScratchModel from "../models/TopsScratch.js"
 
 export const get_write_diff_books = async (req, res) => {
     try {
@@ -47,6 +48,15 @@ export const edit_write_diff_books = async (req, res) => {
 
         const book = await WriteBooksModel.findById(req.params.id)
 
+        const write_books_edit = await WriteBooksModel.
+            findByIdAndUpdate(req.params.id, {
+                book_name: req.body.book_name,
+                format: req.body.format,
+                collection_book: req.body.collection_book,
+                presence: req.body.presence,
+                author: req.body.author
+            })
+
         if (book.presence === 'Не Прочитано' && req.body.presence === 'Прочитано') {
             const pulseDoc = new PulseModel({
                 date_pulse: Date.now(),
@@ -56,19 +66,45 @@ export const edit_write_diff_books = async (req, res) => {
             })
 
             await pulseDoc.save()
+
+            if (book.compilation === 'Отдельные романы') {
+                await ScratchModel.updateOne({ name: req.body.book_name },
+                    {
+                        status: 'Выполнено'
+                    }
+                )
+            } else {
+                const write_books = await WriteBooksModel.find(
+                    { compilation: book.compilation, presence: 'Не Прочитано' })
+
+                if (write_books.length === 0) {
+                    await ScratchModel.updateOne({ name: book.compilation },
+                        {
+                            status: 'Выполнено'
+                        }
+                    )
+                }
+            }
         }
         else if (book.presence === 'Прочитано' && req.body.presence === 'Не Прочитано') {
             await PulseModel.deleteMany({ id_object: req.params.id })
-        }
 
-        const write_books_edit = await WriteBooksModel.
-            findByIdAndUpdate(req.params.id, {
-                book_name: req.body.book_name,
-                format: req.body.format,
-                collection_book: req.body.collection_book,
-                presence: req.body.presence,
-                author: req.body.author
-            })
+            if (book.compilation === 'Отдельные романы') {
+                await ScratchModel.updateOne({ name: req.body.book_name },
+                    {
+                        status: 'Не выполнено'
+                    }
+                )
+            } else {
+
+                await ScratchModel.updateOne({ name: book.compilation },
+                    {
+                        status: 'Не выполнено'
+                    }
+                )
+
+            }
+        }
 
         res.status(200).json({
             write_books_edit
