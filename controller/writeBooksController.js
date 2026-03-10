@@ -2,6 +2,7 @@ import WriteBooksModel from "../models/WriteBooks.js";
 import PulseModel from "../models/Pulse.js"
 import AuthorFilter from "../models/AuthorFilter.js";
 import ScratchModel from "../models/TopsScratch.js"
+import PulseScratchModel from "../models/PulseScratch.js"
 
 export const get_write_books = async (req, res) => {
     try {
@@ -73,6 +74,16 @@ export const edit_write_books = async (req, res) => {
                         status: 'Выполнено'
                     }
                 )
+
+                const pulseDocScratch = new PulseScratchModel({
+                    date_pulse: Date.now(),
+                    name_pulse: book.compilation,
+                    category_pulse: 'Книги',
+                    id_object: req.params.id
+                })
+
+                await pulseDocScratch.save()
+
             } else {
                 const write_books = await WriteBooksModel.find(
                     { compilation: book.compilation, presence: 'Не Прочитано' })
@@ -83,11 +94,22 @@ export const edit_write_books = async (req, res) => {
                             status: 'Выполнено'
                         }
                     )
+
+                    const pulseDocScratch = new PulseScratchModel({
+                        date_pulse: Date.now(),
+                        name_pulse: book.compilation,
+                        category_pulse: 'Книги',
+                        id_object: req.params.id
+                    })
+
+                    await pulseDocScratch.save()
                 }
             }
         }
         else if (book.presence === 'Прочитано' && req.body.presence === 'Не Прочитано') {
             await PulseModel.deleteMany({ id_object: req.params.id })
+
+            await PulseScratchModel.deleteMany({ id_object: req.params.id })
 
             if (book.compilation === 'Отдельные романы') {
                 await ScratchModel.updateOne({ name: req.body.book_name },
