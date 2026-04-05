@@ -31,7 +31,11 @@ export const edit_card = async (req, res) => {
         }
         else if (card.collection_card == 'Воины тени' ||
             card.collection_card == 'Боевая четверка' ||
-            card.collection_card == 'Братья по оружию') {
+            card.collection_card == 'Братья по оружию' ||
+            req.params.collection_card == 'Большая драка' ||
+            req.params.collection_card == 'Мастера иллюзий' ||
+            req.params.collection_card == 'Кодекс чести' ||
+            req.params.collection_card == 'Клинки судьбы') {
             collection_card_pulse = 'Teenage_Mutant_Ninja'
         }
         else if (card.collection_card == 'Отчаянные бойцы' ||
@@ -119,7 +123,12 @@ export const add_card = async (req, res) => {
         }
         else if (req.params.collection_card == 'Воины тени' ||
             req.params.collection_card == 'Боевая четверка' ||
-            req.params.collection_card == 'Братья по оружию') {
+            req.params.collection_card == 'Братья по оружию' ||
+            req.params.collection_card == 'Большая драка' ||
+            req.params.collection_card == 'Мастера иллюзий' ||
+            req.params.collection_card == 'Кодекс чести' ||
+            req.params.collection_card == 'Клинки судьбы'
+        ) {
             collection_card_pulse = 'Teenage_Mutant_Ninja'
         }
         else if (req.params.collection_card == 'Отчаянные бойцы' ||
@@ -245,6 +254,10 @@ export const get_card_listgroup = async (req, res) => {
             { cards: 'Боевая четверка', key: '123' },
             { cards: 'Воины тени', key: '274' },
             { cards: 'Братья по оружию', key: '838' },
+            { cards: 'Большая драка', key: '123' },
+            { cards: 'Мастера иллюзий', key: '123' },
+            { cards: 'Клинки судьбы', key: '123' },
+            { cards: 'Кодекс чести', key: '123' },
             { cards: 'Герои и Злодеи', key: '38' },
             { cards: 'Герои и Злодеи. 2-я часть.', key: '106' },
             { cards: 'Герои и Злодеи. 3-я часть.', key: '166' },
