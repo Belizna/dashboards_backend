@@ -31,7 +31,8 @@ import { get_beyblade, edit_beyblade, delete_beyblade, add_beyblade } from './co
 import { person_get, person_add_class, person_add_person, person_add_books } from './controller/personController.js'
 import { add_maps, get_maps } from './controller/mapsController.js'
 import { jobsMonthUpdate } from './controller/jobsController.js';
-import { edit_books, delete_books, add_books, get_booksdiff_listgroup, get_books } from './controller/bookDiffConstroller.js';
+import { edit_books, delete_books, add_books, get_booksdiff_listgroup, get_books, 
+        get_author, add_author, edit_author, delete_author, get_booksFilter, add_booksFilter,edit_booksFilter,delete_booksFilter } from './controller/bookDiffConstroller.js';
 import { get_write_diff_books, delete_write_diff_books, add_write_diff_books, edit_write_diff_books } from './controller/writeBooksDiffController.js';
 import { purpose_add, purpose_delete, purpose_edit, purpose_get } from './controller/purposeController.js';
 import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
@@ -155,6 +156,14 @@ app.post('/books/add/:book_name', bookCreateValidator, add_books)
 app.patch('/books/edit/:id', bookCreateValidator, edit_books)
 app.delete('/books/delete/:id', delete_books)
 app.get('/booksdiff/charts_groupdiff_list/', get_booksdiff_listgroup)
+app.get('/author/', get_author)
+app.post('/author/add/', add_author)
+app.patch('/author/edit/:id', edit_author)
+app.delete('/author/delete/:id', delete_author)
+app.get('/booksFilter/', get_booksFilter)
+app.post('/booksFilter/add/', add_booksFilter)
+app.patch('/booksFilter/edit/:id', edit_booksFilter)
+app.delete('/booksFilter/delete/:id', delete_booksFilter)
 
 app.get('/collection/card/:collection_card', get_card)
 app.get('/collection/cards/', get_card_listgroup)

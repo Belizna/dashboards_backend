@@ -4,6 +4,183 @@ import BookFilter from "../models/BookDiffFilter.js"
 import WriteBooks from "../models/WriteBooksDiff.js"
 import AuthorFilter from "../models/AuthorDiffFilter.js"
 
+
+export const get_author = async (req, res) => {
+    try {
+
+        const author = await AuthorFilter.find()
+
+        if (!author) {
+            return res.status(404).send({
+                message: 'Авторы не найдены'
+            })
+        }
+
+        res.status(200).json({
+            author
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const edit_author = async (req, res) => {
+    try {
+
+        const author = await AuthorFilter.findById(req.params.id)
+
+        const author_edit = await AuthorFilter
+            .findByIdAndUpdate(req.params.id, {
+                author: req.body.author,
+                key: req.body.key,
+            })
+
+        res.status(200).json({
+            author
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const delete_author = async (req, res) => {
+    try {
+
+        const deleteAuthor = await AuthorFilter.
+            findByIdAndDelete(req.params.id)
+
+        if (!deleteAuthor) {
+            return res.status(404).send({
+                message: "Книга не найдена"
+            })
+        }
+
+        return res.status(200).json({
+            deleteAuthor
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const add_author = async (req, res) => {
+    try {
+
+        const authorDoc = new AuthorFilter({
+            author: req.body.author,
+            key: req.body.key,
+        })
+
+        const author = await authorDoc.save()
+
+        res.status(200).json({
+            ...author._doc
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const get_booksFilter = async (req, res) => {
+    try {
+
+        const booksFilter = await BookFilter.find()
+
+        if (!booksFilter) {
+            return res.status(404).send({
+                message: 'Авторы не найдены'
+            })
+        }
+
+        res.status(200).json({
+            booksFilter
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const edit_booksFilter = async (req, res) => {
+    try {
+
+        const booksFilter = await BookFilter.findById(req.params.id)
+
+        const booksFilter_edit = await BookFilter
+            .findByIdAndUpdate(req.params.id, {
+                compilation: req.body.compilation,
+                key: req.body.key,
+            })
+
+        res.status(200).json({
+            booksFilter
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const delete_booksFilter = async (req, res) => {
+    try {
+
+        const deletebooksFilter = await BookFilter.
+            findByIdAndDelete(req.params.id)
+
+        if (!deletebooksFilter) {
+            return res.status(404).send({
+                message: "Книга не найдена"
+            })
+        }
+
+        return res.status(200).json({
+            deletebooksFilter
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
+export const add_booksFilter = async (req, res) => {
+    try {
+
+        const booksFilterrDoc = new BookFilter({
+            compilation: req.body.compilation,
+            key: req.body.key,
+        })
+
+        const booksFilter = await booksFilterrDoc.save()
+
+        res.status(200).json({
+            ...booksFilter._doc
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            err
+        })
+    }
+}
+
 export const get_books = async (req, res) => {
     try {
 
@@ -147,7 +324,8 @@ export const get_booksdiff_listgroup = async (req, res) => {
                     _id: { author: "$author", compilation: "$compilation", format: "$format" },
                     children: {
                         $push: {
-                            title: "$book_name"
+                            title: "$book_name",
+                            presence: "$presence"
                         }
                     },
                     count: { $sum: 1 }
@@ -175,10 +353,17 @@ export const get_booksdiff_listgroup = async (req, res) => {
                 var Story = []
                 var BigStory = []
                 var group = []
+                var writeGroup = []
 
                 groupAuthor.map(arr => {
 
                     if (arr.compilation === filters[j].compilation) {
+
+                        arr.children.map(ar => {
+                            writeGroup.push({ title: ar.title, presence: ar.presence })
+                        })
+
+
                         var flagR = 0
                         var flagRom = 0
                         var flagP = 0
@@ -217,10 +402,12 @@ export const get_booksdiff_listgroup = async (req, res) => {
                         nameCompilation: filters[j].compilation,
                         keyBooks: filters[j].key,
                         group: group,
+                        writeGroup: writeGroup
                     })
                 }
 
             }
+
             booksAuthorWriteListGroup.push({
                 author: author[i].author,
                 summCycle: groupBooks.length,
@@ -228,7 +415,7 @@ export const get_booksdiff_listgroup = async (req, res) => {
                 summRomans: summRomans,
                 summBigStory: summBigStory,
                 keyImage: author[i].key,
-                books: groupBooks
+                books: groupBooks,
             })
         }
 
@@ -338,7 +525,7 @@ export const get_booksdiff_listgroup = async (req, res) => {
             var procent = 0
             var countNotBooks = 0
             var summBooks = 0
-            var countBooks = 0 
+            var countBooks = 0
 
             books_list.map(arr => {
                 if (arr._id === filters[i].compilation) {
@@ -346,14 +533,14 @@ export const get_booksdiff_listgroup = async (req, res) => {
                     procent = (100 - (items.length * 100 / arr.count)).toFixed(2)
                     countNotBooks = items.length
                     countBooks = arr.count
-                    summBooks =  arr.summ
+                    summBooks = arr.summ
                 }
             })
 
             booksListGroup.push({
                 nameCompilation: filters[i].compilation,
-                procent: procent, 
-                countNotBooks: countNotBooks, 
+                procent: procent,
+                countNotBooks: countNotBooks,
                 items: items,
                 summBooks: summBooks,
                 countBooks: countBooks,
