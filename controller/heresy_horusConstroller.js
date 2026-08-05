@@ -175,31 +175,37 @@ export const get_books_listgroup = async (req, res) => {
                 var Story = []
                 var BigStory = []
                 var group = []
+                var writeGroup = []
 
                 groupAuthor.map(arr => {
 
                     if (arr.compilation === filters[j].compilation) {
+
+                        arr.children.map(ar => {
+                            writeGroup.push({ title: ar.title, presence: ar.presence })
+                        })
+
                         var flagR = 0
                         var flagRom = 0
                         var flagP = 0
 
                         if (arr.format === 'рассказ') {
                             flagR++
-                            summStory+=arr.count
+                            summStory += arr.count
                             arr.children.map(ar => {
                                 Story.push(` ${ar.title}`)
                             })
                         }
                         else if (arr.format === 'роман') {
                             flagRom++
-                            summRomans+=arr.count
+                            summRomans += arr.count
                             arr.children.map(ar => {
                                 Romans.push(` ${ar.title}`)
                             })
                         }
                         else {
                             flagP++
-                            summBigStory+=arr.count
+                            summBigStory += arr.count
                             arr.children.map(ar => {
                                 BigStory.push(` ${ar.title}`)
                             })
@@ -217,6 +223,7 @@ export const get_books_listgroup = async (req, res) => {
                         nameCompilation: filters[j].compilation,
                         keyBooks: filters[j].key,
                         group: group,
+                        writeGroup: writeGroup
                     })
                 }
 
@@ -339,7 +346,7 @@ export const get_books_listgroup = async (req, res) => {
             var procent = 0
             var countNotBooks = 0
             var summBooks = 0
-            var countBooks = 0 
+            var countBooks = 0
 
             books_list.map(arr => {
                 if (arr._id === filters[i].compilation) {
@@ -347,14 +354,14 @@ export const get_books_listgroup = async (req, res) => {
                     procent = (100 - (items.length * 100 / arr.count)).toFixed(2)
                     countNotBooks = items.length
                     countBooks = arr.count
-                    summBooks =  arr.summ
+                    summBooks = arr.summ
                 }
             })
 
             booksListGroup.push({
                 nameCompilation: filters[i].compilation,
-                procent: procent, 
-                countNotBooks: countNotBooks, 
+                procent: procent,
+                countNotBooks: countNotBooks,
                 items: items,
                 summBooks: summBooks,
                 countBooks: countBooks,
