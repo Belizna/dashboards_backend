@@ -147,7 +147,8 @@ export const get_books_listgroup = async (req, res) => {
                     _id: { author: "$author", compilation: "$compilation", format: "$format" },
                     children: {
                         $push: {
-                            title: "$book_name"
+                            title: "$book_name",
+                            presence: "$presence"
                         }
                     },
                     count: { $sum: 1 }
