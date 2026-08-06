@@ -340,6 +340,7 @@ export const get_booksdiff_listgroup = async (req, res) => {
             var summRomans = 0
             var summStory = 0
             var summBigStory = 0
+            var procentAuthor = 0
 
             groupStaticAuthorWriteBooks.map(arr => {
                 if (arr._id.author === author[i].author) {
@@ -354,15 +355,20 @@ export const get_booksdiff_listgroup = async (req, res) => {
                 var BigStory = []
                 var group = []
                 var writeGroup = []
+                var procentWriteGroup = 0
+                var WriteGroupCount = 0
 
                 groupAuthor.map(arr => {
 
                     if (arr.compilation === filters[j].compilation) {
 
                         arr.children.map(ar => {
+                            ar.presence === 'Прочитано' ? procentWriteGroup++ : ar.presence
+                            WriteGroupCount++
                             writeGroup.push({ title: ar.title, presence: ar.presence })
                         })
 
+                        procentWriteGroup = parseFloat((procentWriteGroup * 100 / WriteGroupCount).toFixed(2))
 
                         var flagR = 0
                         var flagRom = 0
@@ -400,16 +406,26 @@ export const get_booksdiff_listgroup = async (req, res) => {
                 if (group.length > 0) {
                     groupBooks.push({
                         nameCompilation: filters[j].compilation,
+                        procentWriteGroup: procentWriteGroup,
                         keyBooks: filters[j].key,
                         group: group,
-                        writeGroup: writeGroup
+                        writeGroup: writeGroup,
                     })
                 }
 
             }
 
+            groupBooks.map(gr => {
+                procentAuthor += gr.procentWriteGroup
+            })
+
+            parseFloat((procentAuthor / groupBooks.length).toFixed(2)) > 0 ?
+                procentAuthor = parseFloat((procentAuthor / groupBooks.length).toFixed(2)) :
+                procentAuthor = 0
+
             booksAuthorWriteListGroup.push({
                 author: author[i].author,
+                procentAuthor: procentAuthor,
                 summCycle: groupBooks.length,
                 summStory: summStory,
                 summRomans: summRomans,
