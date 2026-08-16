@@ -190,8 +190,6 @@ export const get_books_listgroup = async (req, res) => {
                             writeGroup.push({ title: ar.title, presence: ar.presence })
                         })
 
-                        procentWriteGroup = parseFloat((procentWriteGroup * 100 / WriteGroupCount).toFixed(2))
-
                         var flagR = 0
                         var flagRom = 0
                         var flagP = 0
@@ -225,7 +223,9 @@ export const get_books_listgroup = async (req, res) => {
                                 group
 
                 })
+
                 if (group.length > 0) {
+                    procentWriteGroup = parseFloat((procentWriteGroup * 100 / WriteGroupCount).toFixed(2))
                     groupBooks.push({
                         nameCompilation: filters[j].compilation,
                         procentWriteGroup: procentWriteGroup,
