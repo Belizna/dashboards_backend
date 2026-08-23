@@ -69,6 +69,9 @@ export const edit_write_books = async (req, res) => {
             await pulseDoc.save()
 
             if (book.compilation === 'Отдельные романы') {
+
+                const scratch = await ScratchModel.find({ name: req.body.book_name })
+
                 await ScratchModel.updateOne({ name: req.body.book_name },
                     {
                         status: 'Выполнено'
@@ -77,9 +80,9 @@ export const edit_write_books = async (req, res) => {
 
                 const pulseDocScratch = new PulseScratchModel({
                     date_pulse: Date.now(),
-                    name_pulse: book.compilation,
+                    name_pulse: req.body.book_name,
                     category_pulse: 'Книги',
-                    id_object: req.params.id
+                    id_object: scratch[0]._id.toString()
                 })
 
                 await pulseDocScratch.save()
@@ -87,6 +90,8 @@ export const edit_write_books = async (req, res) => {
             } else {
                 const write_books = await WriteBooksModel.find(
                     { compilation: book.compilation, presence: 'Не Прочитано' })
+
+                const scratch = await ScratchModel.find({ name: book.compilation })
 
                 if (write_books.length === 0) {
                     await ScratchModel.updateOne({ name: book.compilation },
@@ -99,7 +104,7 @@ export const edit_write_books = async (req, res) => {
                         date_pulse: Date.now(),
                         name_pulse: book.compilation,
                         category_pulse: 'Книги',
-                        id_object: req.params.id
+                        id_object: scratch[0]._id.toString()
                     })
 
                     await pulseDocScratch.save()
@@ -107,9 +112,8 @@ export const edit_write_books = async (req, res) => {
             }
         }
         else if (book.presence === 'Прочитано' && req.body.presence === 'Не Прочитано') {
-            await PulseModel.deleteMany({ id_object: req.params.id })
 
-            await PulseScratchModel.deleteMany({ id_object: req.params.id })
+            await PulseModel.deleteMany({ id_object: req.params.id })
 
             if (book.compilation === 'Отдельные романы') {
                 await ScratchModel.updateOne({ name: req.body.book_name },
@@ -117,6 +121,10 @@ export const edit_write_books = async (req, res) => {
                         status: 'Не выполнено'
                     }
                 )
+
+                await PulseScratchModel.deleteMany({ name_pulse: req.body.book_name })
+
+
             } else {
 
                 await ScratchModel.updateOne({ name: book.compilation },
@@ -124,6 +132,8 @@ export const edit_write_books = async (req, res) => {
                         status: 'Не выполнено'
                     }
                 )
+
+                await PulseScratchModel.deleteMany({ name_pulse: book.compilation })
 
             }
         }
