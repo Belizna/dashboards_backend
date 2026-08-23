@@ -189,3 +189,67 @@ export const scratch_delete = async (req, res) => {
         res.status(500).json({ ...err })
     }
 }
+
+export const scratch_pulse_statistic = async (req, res) => {
+
+    try {
+
+        const scratch = await ScratchModel.find()
+
+        const pulse_group_charts = await PulseScratchModel.aggregate([
+            {
+                $match: {
+                    date_pulse: {
+                        $gte: new Date(`${req.params.year}-01-01T00:00:00.000Z`),
+                        $lte: new Date(`${req.params.year}-12-31T23:59:59.000Z`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        category_pulse: "$category_pulse",
+                    },
+                    children: {
+                        $push: {
+                            id_object: "$id_object", date_pulse: { $substr: ["$date_pulse", 0, 10] }
+                        }
+                    },
+                },
+            }, { $sort: { _id: 1 } }
+        ])
+
+        var scratch_statistic = []
+
+        for (var i = 0; i < pulse_group_charts.length; i++) {
+
+            var scratchFilter = scratch.filter(scratch =>
+                scratch.category === pulse_group_charts[i]._id.category_pulse)
+
+            var scratchPush = []
+
+            pulse_group_charts[i].children.map(pgc => {
+                scratchFilter.map(sf => {
+                    sf._id.toString() === pgc.id_object ? scratchPush.push({
+                        name: sf.name,
+                        image_key: sf.image_key,
+                        date_pulse: pgc.date_pulse
+                    }) : sf
+                })
+            })
+
+            scratch_statistic.push({
+                category_pulse: pulse_group_charts[i]._id.category_pulse,
+                scratchPush
+            })
+        }
+
+        res.status(200).json({
+            scratch_statistic
+        })
+
+    } catch (err) {
+        res.status(500).json({ ...err })
+    }
+
+}
