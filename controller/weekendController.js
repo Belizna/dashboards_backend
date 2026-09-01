@@ -16,7 +16,7 @@ export const bonus_get = async (req, res) => {
 
 export const bonus_add = async (req, res) => {
     try {
-        const zp = 304500
+        const zp = 356700
 
         var daysUTC_3 = new Date(req.body.date_bonus)
         daysUTC_3.setDate(daysUTC_3.getDate() + 1)
@@ -71,7 +71,7 @@ export const bonus_delete = async (req, res) => {
 
 export const bonus_edit = async (req, res) => {
     try {
-        const zp = 304500
+        const zp = 356700
         const norma_time = await NormaModel.find({ month_norma: (((req.body.date_bonus).substr(0, 10)).split("-").reverse().join("-")).substr(3, 7) })
 
 
