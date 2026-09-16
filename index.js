@@ -2,13 +2,12 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import cron from 'node-cron';
+//import cron from 'node-cron';
 
 import { registerValidator } from './validations/auth.js'
 import { paymentCreateValidator } from './validations/payments.js'
 import { earlyPaymentsEditValidator } from './validations/earlypayments.js'
 import { bookCreateValidator } from './validations/book.js'
-
 import { register, login, me } from './controller/authController.js'
 import { delete_payment, get_payments, update_payment } from './controller/paymentsController.js'
 import { get_early_payment, add_early_payment, edit_early_payment, delete_early_payment } from './controller/earlyPaymentsController.js'
@@ -39,7 +38,7 @@ import { get_write_diff_books, delete_write_diff_books, add_write_diff_books, ed
 import { purpose_add, purpose_delete, purpose_edit, purpose_get } from './controller/purposeController.js';
 import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
 import { scratch_add, scratch_get_poster, scratch_get, scratch_edit, scratch_delete, scratch_pulse_statistic } from './controller/scratchController.js';
-import { job } from './cronJob/MonthJob.js'
+//import { job } from './cronJob/MonthJob.js'
 
 import CheckAuth from './utils/CheckAuth.js'
 
@@ -60,9 +59,9 @@ app.get('/', (req, res) => {
     )
 });
 
-cron.schedule(process.env.CRON_JOB, () => {
+/*cron.schedule(process.env.CRON_JOB, () => {
     job();
-});
+});*/
 
 app.get('/menu', menu_get)
 
