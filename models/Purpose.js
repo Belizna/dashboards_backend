@@ -4,7 +4,6 @@ const PurposeSchema = new mongoose.Schema({
     purpose_key: {
         type: String,
         required: true,
-        unique: true
     },
     purpose_name: {
         type: String,
