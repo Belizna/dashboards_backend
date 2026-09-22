@@ -4,6 +4,7 @@ import PulseScratchModel from "../models/PulseScratch.js"
 export const scratch_get = async (req, res) => {
     try {
         var scratch_poster = []
+        var scratch_DisabledPoster = []
         var scratch_done = 0
 
         const scratch = await ScratchModel.find()
@@ -25,6 +26,8 @@ export const scratch_get = async (req, res) => {
         for (var i = 0; i < groupScratch.length; i++) {
 
             var group = []
+            var groupDisabledStatus = []
+            var key = 1
 
             groupScratch[i].children.map(arr => {
                 if (arr.status === 'Выполнено') {
@@ -38,12 +41,19 @@ export const scratch_get = async (req, res) => {
                         name: arr.name,
                         image_key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png'
                     })
+
+                    groupDisabledStatus.push({
+                        key: key++,
+                        name: arr.name,
+                        image_key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png'
+                    })
                 }
             })
 
             scratch_poster.push({
                 category: groupScratch[i]._id.category,
                 card: group,
+                cardDisabled: groupDisabledStatus,
                 count: groupScratch[i].count,
                 done: scratch_done,
                 key: i + 1
@@ -52,7 +62,7 @@ export const scratch_get = async (req, res) => {
             scratch_done = 0
         }
 
-        res.status(200).json({ scratch, scratch_poster })
+        res.status(200).json({scratch_DisabledPoster, scratch, scratch_poster })
     }
     catch (err) {
         res.status(500).json({ ...err })

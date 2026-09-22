@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const PurposeSchema = new mongoose.Schema({
     purpose_key: {
         type: String,
-        required: true,
+        required: true
     },
     purpose_name: {
         type: String,
