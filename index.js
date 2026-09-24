@@ -39,7 +39,7 @@ import { purpose_add, purpose_delete, purpose_edit, purpose_get } from './contro
 import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
 import { scratch_add, scratch_get_poster, scratch_get, scratch_edit, scratch_delete, scratch_pulse_statistic } from './controller/scratchController.js';
 //import { job } from './cronJob/MonthJob.js'
-
+import { bookmarks_add, bookmarks_add_bookfilter, bookmarks_add_bookRomans, bookmarks_delete, bookmarks_edit, bookmarks_get } from './controller/bookmarksController.js'
 import CheckAuth from './utils/CheckAuth.js'
 
 dotenv.config()
@@ -166,6 +166,12 @@ app.get('/booksFilter/', get_booksFilter)
 app.post('/booksFilter/add/', add_booksFilter)
 app.patch('/booksFilter/edit/:id', edit_booksFilter)
 app.delete('/booksFilter/delete/:id', delete_booksFilter)
+app.post('/bookmarks/add/', bookmarks_add)
+app.post('/bookmarks/add/filter/', bookmarks_add_bookfilter)
+app.post('/bookmarks/add/romans/', bookmarks_add_bookRomans)
+app.get('/bookmarks/', bookmarks_get)
+app.delete('/bookmarks/delete/:id', bookmarks_delete)
+app.patch('/bookmarks/edit/:id', bookmarks_edit)
 
 app.get('/collection/card/:collection_card', get_card)
 app.get('/collection/cards/', get_card_listgroup)
