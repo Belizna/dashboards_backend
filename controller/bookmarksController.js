@@ -2,6 +2,8 @@ import BookmarksModel from "../models/Bookmarks.js";
 import BookFilter from "../models/BookDiffFilter.js"
 import BookModel from "../models/BookDiff.js"
 import WriteBooksModel from "../models/WriteBooksDiff.js";
+import AuthorFilter from "../models/AuthorDiffFilter.js"
+import ScratchModel from "../models/TopsScratch.js"
 
 export const bookmarks_add = async (req, res) => {
 
@@ -45,10 +47,24 @@ export const bookmarks_add_bookRomans = async (req, res) => {
             author: req.body.author
         })
         const writeBook = await write_books_doc.save()
-    
+
         if (book && writeBook) {
             await BookmarksModel.findByIdAndDelete(req.body._id)
         }
+
+        const scratchDoc = new ScratchModel({
+            name: req.body.cycle,
+            status: 'Не выполнено',
+            category: 'Книги',
+            image_key: req.body.image,
+        })
+        await scratchDoc.save()
+
+        const authorDoc = new AuthorFilter({
+            author: req.body.author,
+            key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
+        })
+        await authorDoc.save()
 
         res.status(200).json({ book })
     }
@@ -71,6 +87,20 @@ export const bookmarks_add_bookfilter = async (req, res) => {
         if (filter) {
             await BookmarksModel.findByIdAndDelete(req.body._id)
         }
+        
+        const scratchDoc = new ScratchModel({
+            name: req.body.cycle,
+            status: 'Не выполнено',
+            category: 'Книги',
+            image_key: req.body.image,
+        })
+        await scratchDoc.save()
+
+        const authorDoc = new AuthorFilter({
+            author: req.body.author,
+            key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
+        })
+        await authorDoc.save()
 
         res.status(200).json({ filter })
     }
