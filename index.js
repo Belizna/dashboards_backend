@@ -41,6 +41,7 @@ import { scratch_add, scratch_get_poster, scratch_get, scratch_edit, scratch_del
 //import { job } from './cronJob/MonthJob.js'
 import { bookmarks_add, bookmarks_add_bookfilter, bookmarks_add_bookRomans, bookmarks_delete, bookmarks_edit, bookmarks_get } from './controller/bookmarksController.js'
 import CheckAuth from './utils/CheckAuth.js'
+import { mirf_add, mirf_get, mirf_edit, mirf_delete } from './controller/mirfController.js'
 
 dotenv.config()
 
@@ -202,6 +203,11 @@ app.get('/books/write_diff_books/:book_name', get_write_diff_books)
 app.post('/books/write_diff_books/add/:book_name', add_write_diff_books)
 app.patch('/books/write_diff_books/edit/:id', edit_write_diff_books)
 app.delete('/books/write_diff_books/delete/:id', delete_write_diff_books)
+
+app.get('/mirfbook/', mirf_get)
+app.post('/mirfbook/add', mirf_add)
+app.patch('/mirfbook/edit/:id', mirf_edit)
+app.delete('/mirfbook/delete/:id', mirf_delete)
 
 
 app.get('/games/library/:library_name', get_games)
