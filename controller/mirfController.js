@@ -103,7 +103,7 @@ export const mirf_get = async (req, res) => {
                         : {
                             name: book.book_name,
                             author: book.author,
-                            image_key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
+                            image: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
                             _id: book._id
                         };
                 });
@@ -120,7 +120,7 @@ export const mirf_get = async (req, res) => {
                         : {
                             name: book.book_name,
                             author: book.author,
-                            image_key: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
+                            image: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
                             _id: book._id
                         };
                 });
