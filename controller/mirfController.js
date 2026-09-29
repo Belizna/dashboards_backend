@@ -98,13 +98,23 @@ export const mirf_get = async (req, res) => {
                             name: book.book_name,
                             author: book.author,
                             image: book.image,
-                            _id: book._id
+                            _id: book._id,
+                            history: {
+                                image: book.image,
+                                is_presence: book.is_presence,
+                                is_read: book.is_read
+                            }
                         }
                         : {
                             name: book.book_name,
                             author: book.author,
                             image: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
-                            _id: book._id
+                            _id: book._id,
+                            history: {
+                                image: book.image,
+                                is_presence: book.is_presence,
+                                is_read: book.is_read
+                            }
                         };
                 });
 
@@ -115,13 +125,23 @@ export const mirf_get = async (req, res) => {
                             name: book.book_name,
                             author: book.author,
                             image: book.image,
-                            _id: book._id
+                            _id: book._id,
+                            history: {
+                                image: book.image,
+                                is_presence: book.is_presence,
+                                is_read: book.is_read
+                            }
                         }
                         : {
                             name: book.book_name,
                             author: book.author,
                             image: 'https://i.postimg.cc/5YXX8NKY/seryj-fon.png',
-                            _id: book._id
+                            _id: book._id,
+                            history: {
+                                image: book.image,
+                                is_presence: book.is_presence,
+                                is_read: book.is_read
+                            }
                         };
                 });
 
