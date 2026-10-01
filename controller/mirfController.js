@@ -32,6 +32,8 @@ export const mirf_get = async (req, res) => {
 
     try {
 
+        var statisticMirf = []
+
         const author = await AuthorFilter.find()
 
         const groupMirf = await MirfModel.aggregate([
@@ -169,10 +171,42 @@ export const mirf_get = async (req, res) => {
             };
         });
 
+
+        for (var i = 0; i < mirfMap.length; i++) {
+
+            var countBooksCompilation = 0
+            var countBooksPurchase = 0
+            var countBooksReading = 0
+
+            mirfMap[i].tabs.purchase.map(arr => {
+                countBooksCompilation += arr.count
+                arr.cards.map(arr1 => {
+                    if (arr1.history.is_presence === 'Куплено') {
+                        countBooksPurchase++
+                    }
+
+                    if (arr1.history.is_read === 'Прочитано') {
+                        countBooksReading++
+                    }
+                })
+            })
+
+
+            statisticMirf.push({
+                key: mirfMap[i].key,
+                compilation: mirfMap[i].compilation,
+                countBooksCompilation: countBooksCompilation,
+                countBooksPurchase: countBooksPurchase,
+                percentPurchase: Number((countBooksPurchase * 100 / countBooksCompilation).toFixed(2)),
+                countBooksReading: countBooksReading,
+                percentReading: Number((countBooksReading * 100 / countBooksCompilation).toFixed(2))
+            })
+        }
+
         res.status(200).json({
             mirfMap,
-            groupMirf,
             author,
+            statisticMirf
         })
     }
     catch (err) {
