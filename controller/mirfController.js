@@ -165,12 +165,11 @@ export const mirf_get = async (req, res) => {
                 compilation: compilation._id,
 
                 tabs: {
-                    purchase,
-                    reading
+                    purchase: purchase.sort((a, b) => b.count - a.count),
+                    reading: reading.sort((a, b) => b.count - a.count)
                 }
             };
         });
-
 
         for (var i = 0; i < mirfMap.length; i++) {
 
@@ -190,7 +189,6 @@ export const mirf_get = async (req, res) => {
                     }
                 })
             })
-
 
             statisticMirf.push({
                 key: mirfMap[i].key,
