@@ -71,7 +71,11 @@ export const bonus_delete = async (req, res) => {
 
 export const bonus_edit = async (req, res) => {
     try {
+<<<<<<< HEAD
         const zp = 356700
+=======
+        const zp = 304500
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
         const norma_time = await NormaModel.find({ month_norma: (((req.body.date_bonus).substr(0, 10)).split("-").reverse().join("-")).substr(3, 7) })
 
 

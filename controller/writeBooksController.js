@@ -49,6 +49,7 @@ export const edit_write_books = async (req, res) => {
 
         const book = await WriteBooksModel.findById(req.params.id)
 
+<<<<<<< HEAD
         const write_books_edit = await WriteBooksModel.
             findByIdAndUpdate(req.params.id, {
                 book_name: req.body.book_name,
@@ -58,6 +59,8 @@ export const edit_write_books = async (req, res) => {
                 author: req.body.author
             })
 
+=======
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
         if (book.presence === 'Не Прочитано' && req.body.presence === 'Прочитано') {
             const pulseDoc = new PulseModel({
                 date_pulse: Date.now(),
@@ -67,6 +70,7 @@ export const edit_write_books = async (req, res) => {
             })
 
             await pulseDoc.save()
+<<<<<<< HEAD
 
             if (book.compilation === 'Отдельные романы') {
 
@@ -138,6 +142,22 @@ export const edit_write_books = async (req, res) => {
             }
         }
 
+=======
+        }
+        else if (book.presence === 'Прочитано' && req.body.presence === 'Не Прочитано') {
+            await PulseModel.deleteMany({ id_object: req.params.id })
+        }
+
+        const write_books_edit = await WriteBooksModel.
+            findByIdAndUpdate(req.params.id, {
+                book_name: req.body.book_name,
+                format: req.body.format,
+                collection_book: req.body.collection_book,
+                presence: req.body.presence,
+                author: req.body.author
+            })
+
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
         res.status(200).json({
             write_books_edit
         })

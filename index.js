@@ -2,12 +2,20 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
+<<<<<<< HEAD
 //import cron from 'node-cron';
+=======
+import cron from 'node-cron';
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 
 import { registerValidator } from './validations/auth.js'
 import { paymentCreateValidator } from './validations/payments.js'
 import { earlyPaymentsEditValidator } from './validations/earlypayments.js'
 import { bookCreateValidator } from './validations/book.js'
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 import { register, login, me } from './controller/authController.js'
 import { delete_payment, get_payments, update_payment } from './controller/paymentsController.js'
 import { get_early_payment, add_early_payment, edit_early_payment, delete_early_payment } from './controller/earlyPaymentsController.js'
@@ -30,6 +38,7 @@ import { get_beyblade, edit_beyblade, delete_beyblade, add_beyblade } from './co
 import { person_get, person_add_class, person_add_person, person_add_books } from './controller/personController.js'
 import { add_maps, get_maps } from './controller/mapsController.js'
 import { jobsMonthUpdate } from './controller/jobsController.js';
+<<<<<<< HEAD
 import {
     edit_books, delete_books, add_books, get_booksdiff_listgroup, get_books,
     get_author, add_author, edit_author, delete_author, get_booksFilter, add_booksFilter, edit_booksFilter, delete_booksFilter
@@ -43,6 +52,12 @@ import { bookmarks_add, bookmarks_add_bookfilter, bookmarks_add_bookRomans, book
 import CheckAuth from './utils/CheckAuth.js'
 import { mirf_add, mirf_get, mirf_edit, mirf_delete } from './controller/mirfController.js'
 import { expense_get, expense_add, expense_edit, expense_delete } from './controller/expenseController.js'
+=======
+import { credit_add_history, credit_get_history } from './controller/creditStaticHistoryController.js'
+import { job } from './cronJob/MonthJob.js'
+
+import CheckAuth from './utils/CheckAuth.js'
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 
 dotenv.config()
 
@@ -61,9 +76,15 @@ app.get('/', (req, res) => {
     )
 });
 
+<<<<<<< HEAD
 /*cron.schedule(process.env.CRON_JOB, () => {
     job();
 });*/
+=======
+cron.schedule(process.env.CRON_JOB, () => {
+    job();
+});
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 
 app.get('/menu', menu_get)
 
@@ -72,6 +93,7 @@ app.post('/person/add/class', person_add_class)
 app.post('/person/add/person', person_add_person)
 app.post('/person/add/books', person_add_books)
 
+<<<<<<< HEAD
 app.get('/scratch', scratch_get)
 app.get('/scratch/poster', scratch_get_poster)
 app.post('/scratch/add/', scratch_add)
@@ -87,6 +109,11 @@ app.post('/purpose/add', purpose_add)
 app.patch('/purpose/edit/:id', purpose_edit)
 app.delete('/purpose/delete/:id', purpose_delete)
 
+=======
+app.get('/maps', get_maps)
+app.post('/maps/add/placemark', add_maps)
+
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 app.get('/comics/:collection_comics', comics_get)
 app.post('/comics/add', comics_add)
 app.patch('/comics/edit/:id', comics_edit)
@@ -155,6 +182,7 @@ app.patch('/books/heresy_horus/edit/:id', bookCreateValidator, edit_heresy_books
 app.delete('/books/heresy_horus/delete/:id', delete_heresy_books)
 app.get('/books/charts_group_list/', get_books_listgroup)
 
+<<<<<<< HEAD
 app.get('/books/:book_name', get_books)
 app.post('/books/add/:book_name', bookCreateValidator, add_books)
 app.patch('/books/edit/:id', bookCreateValidator, edit_books)
@@ -175,6 +203,8 @@ app.get('/bookmarks/', bookmarks_get)
 app.delete('/bookmarks/delete/:id', bookmarks_delete)
 app.patch('/bookmarks/edit/:id', bookmarks_edit)
 
+=======
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 app.get('/collection/card/:collection_card', get_card)
 app.get('/collection/cards/', get_card_listgroup)
 app.post('/collection/card/add/:collection_card', add_card)
@@ -200,6 +230,7 @@ app.post('/books/write_books/add/:book_name', add_write_books)
 app.patch('/books/write_books/edit/:id', edit_write_books)
 app.delete('/books/write_books/delete/:id', delete_write_books)
 
+<<<<<<< HEAD
 app.get('/books/write_diff_books/:book_name', get_write_diff_books)
 app.post('/books/write_diff_books/add/:book_name', add_write_diff_books)
 app.patch('/books/write_diff_books/edit/:id', edit_write_diff_books)
@@ -211,6 +242,8 @@ app.patch('/mirfbook/edit/:id', mirf_edit)
 app.delete('/mirfbook/delete/:id', mirf_delete)
 
 
+=======
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 app.get('/games/library/:library_name', get_games)
 app.post('/games/library/add', add_games)
 app.patch('/games/library/edit/:id', edit_games)
@@ -225,11 +258,14 @@ app.post('/auth/register/', registerValidator, register);
 app.post('/auth/login/', registerValidator, login)
 app.get('/auth/me/', CheckAuth, me)
 
+<<<<<<< HEAD
 app.get('/expense', expense_get)
 app.post('/expense/add', expense_add)
 app.patch('/expense/edit/:id', expense_edit)
 app.delete('/expense/delete/:id', expense_delete)
 
+=======
+>>>>>>> 9373c5eafff8590969e7d02c6d684361385a8771
 app.listen(process.env.PORT || 8080, (err) => {
     if (err) {
         return console.log(err)

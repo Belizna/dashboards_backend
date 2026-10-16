@@ -32,10 +32,10 @@ export const edit_card = async (req, res) => {
         else if (card.collection_card == 'Воины тени' ||
             card.collection_card == 'Боевая четверка' ||
             card.collection_card == 'Братья по оружию' ||
-            req.params.collection_card == 'Большая драка' ||
-            req.params.collection_card == 'Мастера иллюзий' ||
-            req.params.collection_card == 'Кодекс чести' ||
-            req.params.collection_card == 'Клинки судьбы') {
+            card.collection_card == 'Большая драка' ||
+            card.collection_card == 'Мастера иллюзий' ||
+            card.collection_card == 'Кодекс чести' ||
+            card.collection_card == 'Клинки судьбы') {
             collection_card_pulse = 'Teenage_Mutant_Ninja'
         }
         else if (card.collection_card == 'Отчаянные бойцы' ||
