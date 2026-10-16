@@ -30,8 +30,6 @@ export const get_author = async (req, res) => {
 export const edit_author = async (req, res) => {
     try {
 
-        const author = await AuthorFilter.findById(req.params.id)
-
         const author_edit = await AuthorFilter
             .findByIdAndUpdate(req.params.id, {
                 author: req.body.author,
@@ -39,7 +37,7 @@ export const edit_author = async (req, res) => {
             })
 
         res.status(200).json({
-            author
+            author_edit
         })
     }
     catch (err) {
@@ -118,16 +116,15 @@ export const get_booksFilter = async (req, res) => {
 export const edit_booksFilter = async (req, res) => {
     try {
 
-        const booksFilter = await BookFilter.findById(req.params.id)
-
         const booksFilter_edit = await BookFilter
             .findByIdAndUpdate(req.params.id, {
                 compilation: req.body.compilation,
                 key: req.body.key,
+                active: req.body.active,
             })
 
         res.status(200).json({
-            booksFilter
+            booksFilter_edit
         })
     }
     catch (err) {
@@ -166,6 +163,7 @@ export const add_booksFilter = async (req, res) => {
         const booksFilterrDoc = new BookFilter({
             compilation: req.body.compilation,
             key: req.body.key,
+            active: req.body.active,
         })
 
         const booksFilter = await booksFilterrDoc.save()
@@ -551,16 +549,17 @@ export const get_booksdiff_listgroup = async (req, res) => {
                     summBooks = arr.summ
                 }
             })
-
-            booksListGroup.push({
-                nameCompilation: filters[i].compilation,
-                procent: procent,
-                countNotBooks: countNotBooks,
-                items: items,
-                summBooks: summBooks,
-                countBooks: countBooks,
-                keyBooks: filters[i].key
-            })
+            if (filters[i].active === 'Да') {
+                booksListGroup.push({
+                    nameCompilation: filters[i].compilation,
+                    procent: procent,
+                    countNotBooks: countNotBooks,
+                    items: items,
+                    summBooks: summBooks,
+                    countBooks: countBooks,
+                    keyBooks: filters[i].key
+                })
+            }
         }
 
         booksListGroup.sort((a, b) => a.procent - b.procent)

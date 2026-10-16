@@ -8,6 +8,9 @@ const BookDiffFilterSchema = new mongoose.Schema({
     },
     key: {
         type: String,
+    },
+    active: {
+        type: String,
     }
 })
 
